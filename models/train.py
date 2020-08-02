@@ -24,6 +24,11 @@ class Trainer:
                     download=True, transform=transform)
             test_data = datasets.CIFAR10(self.data_dir, train=False,
                     download=True, transform=transform)
+        elif dataset == 'vocseg':
+            train_data = datasets.VOCSegmentation(self.data_dir, image_set='train',
+                    download=True, transform=transform, target_transform=transform)
+            test_data = datasets.VOCSegmentation(self.data_dir, image_set='val',
+                    download=True, transform=transform, target_transform=transform)
         else:
             # raise an error?
             pass
@@ -46,7 +51,6 @@ class Trainer:
         return SubsetRandomSampler(train_idx), SubsetRandomSampler(valid_idx)
 
     def train(self, model, criterion, optimizer, n_epochs=30):
-
         valid_loss_min = np.Inf
 
         for epoch in range(1, n_epochs+1):

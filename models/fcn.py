@@ -6,8 +6,7 @@ class AlexNetFCN(nn.Module):
 
     def __init__(self):
         super().__init__()
-        alexnet = AlexNet()
-        self.features = alexnet.features
+        self.features = AlexNet().features
         self.classifier = nn.Sequential(
                 nn.Dropout(),
                 nn.Conv2d(256, 4096, kernel_size=6),
@@ -15,11 +14,12 @@ class AlexNetFCN(nn.Module):
                 nn.Dropout(),
                 nn.Conv2d(4096, 4096, kernel_size=1),
                 nn.ReLU(),
-                nn.Conv2d(4096, 1000, kernel_size=1)
+                nn.Conv2d(4096, 21, kernel_size=1)
                 )
 
     def forward(self, x):
         x = self.features(x)
+        import ipdb; ipdb.set_trace()
         x = self.classifier(x)
         return x
 
@@ -38,14 +38,11 @@ if __name__ == '__main__':
     optimizer = optim.Adam(model.parameters())
 
     transform = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(227),
-        transforms.RandomHorizontalFlip(),
-        transforms.RandomRotation(10),
+        transforms.Resize((256, 256)),
         transforms.ToTensor(),
         ])
 
     trainer = Trainer(device=device)
-    trainer.load_data(transform=transform, dataset='cifar10')
+    trainer.load_data(transform=transform, dataset='vocseg')
     trainer.train(model, criterion, optimizer, n_epochs=1)
     trainer.test(model, criterion)
