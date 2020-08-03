@@ -58,6 +58,7 @@ class Trainer:
             train_loss = 0.0
             valid_loss = 0.0
 
+            import ipdb; ipdb.set_trace()
             model.train()
             for data, target in tqdm(self.train_loader):
                 data, target = data.to(self.device), target.to(self.device)
@@ -74,6 +75,7 @@ class Trainer:
                 output = model(data)
                 loss = criterion(output, target)
                 valid_loss += loss.item()*data.size(0)
+
 
 
             train_loss = train_loss/len(self.train_loader.dataset)
