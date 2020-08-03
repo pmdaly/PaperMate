@@ -18,11 +18,19 @@ class AlexNetFCN(nn.Module):
                 )
 
     def forward(self, x):
+        orig_size = x.shape[-2:]
         x = self.features(x)
-        import ipdb; ipdb.set_trace()
         x = self.classifier(x)
+        x = nn.functional.interpolate(x, orig_size)
         return x
 
+
+class SqueezeToLong:
+    '''Converts the target class in VOCSegmentation from FloatTensor to
+    LongTensor and squeezes the channel dimension out.'''
+
+    def __call__(self, target):
+        return target.squeeze().type(torch.LongTensor)
 
 
 if __name__ == '__main__':
@@ -39,10 +47,16 @@ if __name__ == '__main__':
 
     transform = transforms.Compose([
         transforms.Resize((256, 256)),
+        transforms.ToTensor()
+        ])
+
+    target_transform = transforms.Compose([
+        transforms.Resize((256, 256)),
         transforms.ToTensor(),
+        SqueezeToLong()
         ])
 
     trainer = Trainer(device=device)
-    trainer.load_data(transform=transform, dataset='vocseg')
+    trainer.load_data(transform=transform, target_transform=target_transform, dataset='vocseg')
     trainer.train(model, criterion, optimizer, n_epochs=1)
-    trainer.test(model, criterion)
+    #trainer.test(model, criterion)

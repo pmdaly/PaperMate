@@ -17,18 +17,20 @@ class Trainer:
         self.valid_size = valid_size
         self.num_workers = num_workers
 
-    def load_data(self, transform=None, dataset='cifar10'):
+    def load_data(self, transform=None, target_transform=None, dataset='cifar10'):
 
         if dataset == 'cifar10':
             train_data = datasets.CIFAR10(self.data_dir, train=True,
                     download=True, transform=transform)
             test_data = datasets.CIFAR10(self.data_dir, train=False,
                     download=True, transform=transform)
+            self.model_name = 'model_cifar'
         elif dataset == 'vocseg':
             train_data = datasets.VOCSegmentation(self.data_dir, image_set='train',
-                    download=True, transform=transform, target_transform=transform)
+                    download=True, transform=transform, target_transform=target_transform)
             test_data = datasets.VOCSegmentation(self.data_dir, image_set='val',
-                    download=True, transform=transform, target_transform=transform)
+                    download=True, transform=transform, target_transform=target_transform)
+            self.model_name = 'model_vocseg'
         else:
             # raise an error?
             pass
@@ -58,7 +60,6 @@ class Trainer:
             train_loss = 0.0
             valid_loss = 0.0
 
-            import ipdb; ipdb.set_trace()
             model.train()
             for data, target in tqdm(self.train_loader):
                 data, target = data.to(self.device), target.to(self.device)
@@ -87,7 +88,7 @@ class Trainer:
             if valid_loss <= valid_loss_min:
                 print('Validation loss decreased ({:.6f} --> {:.6f}).  Saving model ...'.format(
                     valid_loss_min, valid_loss))
-                torch.save(model.state_dict(), self.checkpoint_dir + 'model_cifar.pt')
+                torch.save(model.state_dict(), self.checkpoint_dir + self.model_name + 'pt')
                 valid_loss_min = valid_loss
 
 
