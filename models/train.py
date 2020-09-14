@@ -32,6 +32,12 @@ class Trainer:
             test_data = datasets.VOCSegmentation(self.data_dir, image_set='val',
                     download=True, transform=transform, target_transform=target_transform)
             self.model_name += '_vocseg'
+        elif dataset == 'imagenet':
+            train_data = datasets.ImageNet(self.data_dir, train=True,
+                    download=True, transform=transform)
+            test_data = datasets.ImageNet(self.data_dir, train=False,
+                    download=True, transform=transform)
+            self.model_name += '_imagenet'
         else:
             # raise an error?
             pass
