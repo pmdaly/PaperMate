@@ -8,8 +8,9 @@ from tqdm import tqdm
 
 class Trainer:
 
-    def __init__(self, data_dir='./data/', checkpoint_dir='./ckpts/', device='cpu',
-                       batch_size=32, valid_size=0.2, num_workers=0):
+    def __init__(self, model_name, data_dir='./data/', checkpoint_dir='./ckpts/',
+                       device='cpu', batch_size=32, valid_size=0.2, num_workers=0):
+        self.model_name = model_name
         self.data_dir = data_dir
         self.checkpoint_dir = checkpoint_dir
         self.device = device
@@ -24,13 +25,13 @@ class Trainer:
                     download=True, transform=transform)
             test_data = datasets.CIFAR10(self.data_dir, train=False,
                     download=True, transform=transform)
-            self.model_name = 'model_cifar'
+            self.model_name += '_cifar'
         elif dataset == 'vocseg':
             train_data = datasets.VOCSegmentation(self.data_dir, image_set='train',
                     download=True, transform=transform, target_transform=target_transform)
             test_data = datasets.VOCSegmentation(self.data_dir, image_set='val',
                     download=True, transform=transform, target_transform=target_transform)
-            self.model_name = 'model_vocseg'
+            self.model_name += '_vocseg'
         else:
             # raise an error?
             pass

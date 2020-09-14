@@ -56,7 +56,7 @@ if __name__ == '__main__':
         SqueezeToLong()
         ])
 
-    trainer = Trainer(device=device)
+    trainer = Trainer(model_name='alexfcn', device=device)
     trainer.load_data(transform=transform, target_transform=target_transform, dataset='vocseg')
     trainer.train(model, criterion, optimizer, n_epochs=1)
     #trainer.test(model, criterion)

@@ -60,7 +60,7 @@ if __name__ == '__main__':
         transforms.ToTensor(),
         ])
 
-    trainer = Trainer(device=device)
+    trainer = Trainer(model_name='alexnet', device=device)
     trainer.load_data(transform=transform, dataset='cifar10')
     trainer.train(model, criterion, optimizer, n_epochs=1)
     trainer.test(model, criterion)
